@@ -30,7 +30,11 @@ const uint8_t testKey[16] = {
   0xab, 0xf7, 0x15, 0x88,
   0x09, 0xcf, 0x4f, 0x3c,
 };
+
+
  
+long duration;
+int distance;
 
   void testFunc( byte *msg, byte msgLen, const byte *key, byte keyLen,uint8_t mac[])
 {
@@ -104,29 +108,37 @@ void setup() {
   aes128.setKey(key,16);
   
   //encrypted data + MAC which will be shared through CAN bus.
-  uint8_t  data[24];
+  
   
   mcp2515.reset();
   mcp2515.setBitrate(CAN_125KBPS);
   mcp2515.setNormalMode();
   
-  // example data which has to be shared
-   canMsg1.can_id  = 0x0F6;
+
+}
+
+void loop() {
+
+    // Random data which has to be shared
+
+    uint8_t  data[24];
+
+  canMsg1.can_id  = 0x0F6;
   canMsg1.can_dlc = 8;
-  canMsg1.data[0] = 0x3D;
-  canMsg1.data[1] = 0x87;
-  canMsg1.data[2] = 0x32;
-  canMsg1.data[3] = 0xFA;
-  canMsg1.data[4] = 0x26;
-  canMsg1.data[5] = 0x8E;
-  canMsg1.data[6] = 0xBE;
-  canMsg1.data[7] = 0x86;
+  canMsg1.data[0] = random(256);
+  canMsg1.data[1] = random(256);
+  canMsg1.data[2] = random(256);
+  canMsg1.data[3] = random(256);
+  canMsg1.data[4] = random(256);
+  canMsg1.data[5] = random(256);
+  canMsg1.data[6] = random(256);
+  canMsg1.data[7] = random(256);
   
   //Plaintext (data which has to be encrypted)
 
   uint8_t plaintext[]={
-  canMsg1.data[0], canMsg1.data[1], canMsg1.data[2], canMsg1.data[3],
-  canMsg1.data[4], canMsg1.data[5], canMsg1.data[6], canMsg1.data[7]
+     canMsg1.data[0], canMsg1.data[1], canMsg1.data[2], canMsg1.data[3],
+     canMsg1.data[4], canMsg1.data[5], canMsg1.data[6], canMsg1.data[7]
   };
 
   uint8_t  length = sizeof(plaintext)/sizeof(plaintext[0]);
@@ -182,9 +194,6 @@ void setup() {
   delay(100);
  Serial.println();
   Serial.println("Messages sent");
-
-}
-
-void loop() {
-  
+ 
+  delay(10000);
 }
